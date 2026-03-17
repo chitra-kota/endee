@@ -1,5 +1,15 @@
 Cannot connect to office WiFi
-Laptop not connecting to company network
-Printer not working in office
-VPN connection failed
+Laptop battery not charging
 Email login not working
+Printer not responding
+VPN connection failing
+Computer running very slow
+Software installation error
+Keyboard not working properly
+Internet disconnecting frequently
+Unable to access company portal
+Mouse not working
+Unable to install company software
+Monitor display flickering
+Company VPN disconnecting frequently
+Office network very slow
