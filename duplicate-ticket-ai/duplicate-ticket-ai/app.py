@@ -1,31 +1,36 @@
 from sentence_transformers import SentenceTransformer
-import numpy as np
+import endee
 
-# Load model
-model = SentenceTransformer('all-MiniLM-L6-v2')
+# Load embedding model
+model = SentenceTransformer("all-MiniLM-L6-v2")
 
-# Load tickets
+# Read existing tickets
 with open("tickets.txt", "r") as f:
     tickets = [line.strip() for line in f.readlines()]
 
 # Convert tickets to vectors
-ticket_vectors = model.encode(tickets)
+embeddings = model.encode(tickets)
+
+# Create Endee database
+db = endee.Database("ticket_db")
+
+# Insert tickets into Endee vector database
+for i, vector in enumerate(embeddings):
+    db.insert(
+        id=i,
+        vector=vector,
+        metadata={"ticket": tickets[i]}
+    )
 
 print("Smart Duplicate Ticket Detector")
-print()
 
-new_ticket = input("Enter new support ticket: ")
+# Get new ticket from user
+query = input("Enter new support ticket: ")
 
-# Convert new ticket to vector
-new_vector = model.encode([new_ticket])[0]
+# Convert query to vector
+query_vector = model.encode([query])[0]
 
-# Calculate similarity
-similarities = np.dot(ticket_vectors, new_vector) / (
-    np.linalg.norm(ticket_vectors, axis=1) * np.linalg.norm(new_vector)
-)
+# Search similar ticket in Endee
+results = db.search(query_vector, top_k=1)
 
-best_match_index = np.argmax(similarities)
-
-print()
-print("Most similar existing ticket:")
-print(tickets[best_match_index])
+print("Similar existing ticket:", results[0]["metadata"]["ticket"])
