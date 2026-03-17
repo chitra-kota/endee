@@ -1,31 +1,31 @@
 from sentence_transformers import SentenceTransformer
 import numpy as np
 
-tickets = [
-"Cannot connect to office WiFi",
-"Laptop battery not charging",
-"Email login not working",
-"Printer not responding",
-"VPN connection failing",
-"Computer running very slow",
-"Software installation error",
-"Keyboard not working properly",
-"Internet disconnecting frequently",
-"Unable to access company portal"
-]
-
+# Load model
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
-ticket_embeddings = model.encode(tickets)
+# Load tickets
+with open("tickets.txt", "r") as f:
+    tickets = [line.strip() for line in f.readlines()]
+
+# Convert tickets to vectors
+ticket_vectors = model.encode(tickets)
 
 print("Smart Duplicate Ticket Detector")
+print()
 
-query = input("Enter new support ticket: ")
+new_ticket = input("Enter new support ticket: ")
 
-query_embedding = model.encode([query])
+# Convert new ticket to vector
+new_vector = model.encode([new_ticket])[0]
 
-similarity = np.dot(ticket_embeddings, query_embedding.T)
+# Calculate similarity
+similarities = np.dot(ticket_vectors, new_vector) / (
+    np.linalg.norm(ticket_vectors, axis=1) * np.linalg.norm(new_vector)
+)
 
-best_match = tickets[np.argmax(similarity)]
+best_match_index = np.argmax(similarities)
 
-print("Similar existing ticket:", best_match)
+print()
+print("Most similar existing ticket:")
+print(tickets[best_match_index])

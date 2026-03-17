@@ -1,0 +1,5 @@
+Cannot connect to office WiFi
+Laptop not connecting to company network
+Printer not working in office
+VPN connection failed
+Email login not working
